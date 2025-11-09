@@ -41,7 +41,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         if (data.success) {
           setSuccess("Registration successful. Redirecting to dashboard...");
           setTimeout(() => {
-            window.location.href = "/dashboard"; // <-- redirect after registration
+            window.location.href = "/dashboard";
           }, 1000);
         } else setError(data.message || "Something went wrong");
       } catch (err: any) {
@@ -55,8 +55,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
   };
 
   return (
-    <Card className="w-full max-w-md space-y-6 p-6 bg-white dark:bg-purple-800">
-      <h1 className="text-3xl font-extrabold text-center text-purple-900 dark:text-purple-100">
+    <Card className="w-full max-w-md p-6 space-y-6 bg-background-card-light dark:bg-background-card-dark shadow-soft">
+      <h1 className="text-3xl font-extrabold text-center text-text-light dark:text-text-dark">
         {mode === "login" ? "Login" : "Register"}
       </h1>
 
@@ -70,7 +70,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
             placeholder="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full p-3 border border-purple-300 rounded-lg dark:bg-purple-700 dark:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="w-full p-3 border border-border-light dark:border-border-dark rounded-lg bg-white dark:bg-background-card-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-brand"
             required
           />
         )}
@@ -80,7 +80,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 border border-purple-300 rounded-lg dark:bg-purple-700 dark:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="w-full p-3 border border-border-light dark:border-border-dark rounded-lg bg-white dark:bg-background-card-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-brand"
           required
         />
         <input
@@ -88,57 +88,68 @@ export default function AuthForm({ mode }: AuthFormProps) {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 border border-purple-300 rounded-lg dark:bg-purple-700 dark:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="w-full p-3 border border-border-light dark:border-border-dark rounded-lg bg-white dark:bg-background-card-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-brand"
           required
         />
 
         {mode === "register" && (
-          <div className="flex items-center">
+          <label className="inline-flex items-center gap-2 text-sm text-text-light dark:text-text-dark">
             <input
               type="checkbox"
-              id="terms"
               checked={acceptTerms}
               onChange={(e) => setAcceptTerms(e.target.checked)}
-              className="mr-2"
+              className="form-checkbox h-4 w-4 text-brand"
             />
-            <label htmlFor="terms" className="text-sm text-purple-700 dark:text-purple-300">
-              I accept the <span className="underline">terms & conditions</span>
-            </label>
-          </div>
+            I accept the <span className="underline">terms & conditions</span>
+          </label>
         )}
 
         <button
           type="submit"
-          className="w-full flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold text-lg transition transform hover:scale-105"
+          className="w-full flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white py-3 rounded-lg font-semibold text-lg transition transform hover:scale-105 shadow-md"
         >
-          {mode === "login" ? <FaSignInAlt className="mr-2" /> : <FaUserPlus className="mr-2" />}
+          {mode === "login" ? <FaSignInAlt /> : <FaUserPlus />}
           {mode === "login" ? "Login" : "Register"}
         </button>
 
         {mode === "login" && (
-          <p className="text-right text-sm text-purple-700 dark:text-purple-300 cursor-pointer hover:underline">
+          <p
+            className="text-right text-sm text-text-light dark:text-text-dark cursor-pointer hover:underline"
+            onClick={() => alert("Forgot password flow")}
+          >
             Forgot Password?
           </p>
         )}
       </form>
 
-      <div className="flex items-center justify-center space-x-4 mt-4">
+      {/* Separator */}
+      <div className="flex items-center justify-center gap-2 mt-2 mb-2">
+        <hr className="flex-1 border-border-light dark:border-border-dark" />
+        <span className="text-sm text-text-light dark:text-text-dark">or</span>
+        <hr className="flex-1 border-border-light dark:border-border-dark" />
+      </div>
+
+      {/* OAuth buttons */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <button
           onClick={() => handleOAuth("google")}
-          className="flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition transform hover:scale-105"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition transform hover:scale-105"
         >
-          <FaGoogle className="mr-2" /> Google
+          <FaGoogle /> Google
         </button>
         <button
           onClick={() => handleOAuth("github")}
-          className="flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-lg transition transform hover:scale-105"
+          className="w-full sm:w-auto flex items-center justify-center gap-2
+             bg-gray-800 dark:bg-white dark:text-gray-900
+             hover:bg-gray-900 dark:hover:bg-background-card-dark
+             text-white py-2 px-4 rounded-lg transition transform hover:scale-105"
         >
-          <FaGithub className="mr-2" /> GitHub
+          <FaGithub /> GitHub
         </button>
       </div>
 
       {mode === "register" && (
-        <p className="text-center text-sm text-purple-700 dark:text-purple-300 mt-4">
+        <p className="text-center text-sm text-text-light dark:text-text-dark mt-2">
           Already a member?{" "}
           <span
             className="cursor-pointer font-semibold hover:underline"
@@ -150,7 +161,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       )}
 
       {mode === "login" && (
-        <p className="text-center text-sm text-purple-700 dark:text-purple-300 mt-4">
+        <p className="text-center text-sm text-text-light dark:text-text-dark mt-2">
           Not a member?{" "}
           <span
             className="cursor-pointer font-semibold hover:underline"
