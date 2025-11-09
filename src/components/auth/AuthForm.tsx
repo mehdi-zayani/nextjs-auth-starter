@@ -32,14 +32,18 @@ export default function AuthForm({ mode }: AuthFormProps) {
         return;
       }
       try {
-        const res = await fetch("/api/register", {
+        const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
         });
         const data = await res.json();
-        if (data.success) setSuccess("Registration successful. You can now login.");
-        else setError(data.message || "Something went wrong");
+        if (data.success) {
+          setSuccess("Registration successful. Redirecting to dashboard...");
+          setTimeout(() => {
+            window.location.href = "/dashboard"; // <-- redirect after registration
+          }, 1000);
+        } else setError(data.message || "Something went wrong");
       } catch (err: any) {
         setError(err.message);
       }
