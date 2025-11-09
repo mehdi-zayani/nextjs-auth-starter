@@ -1,13 +1,36 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { FaUserPlus } from "react-icons/fa"; // Icon for Sign Up
+
 export default function HomePage() {
+  const router = useRouter();
+
   return (
-    <div className="max-w-xl w-full text-center space-y-6">
-      <h1 className="text-5xl font-extrabold tracking-tight">Welcome to NextJS Auth Starter</h1>
-      <p className="text-lg text-gray-700 dark:text-gray-300">
-        A clean, minimal starter with TailwindCSS, dark mode, and ready for authentication.
-      </p>
-      <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
-        Get Started
-      </button>
+    <div className="min-h-screen flex items-center justify-center bg-purple-100 dark:bg-purple-900 px-4">
+      <div className="text-center space-y-6">
+        <h1 className="text-6xl font-extrabold text-purple-900 dark:text-purple-100 tracking-tight">
+          Build Your SaaS Fast
+        </h1>
+        <p className="text-xl text-purple-700 dark:text-purple-300 max-w-md mx-auto">
+          Start by creating your account to get full access to all features.
+        </p>
+        <div className="flex justify-center space-x-4">
+          <button
+            onClick={() => router.push("/register")}
+            className="flex items-center px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold text-lg transition transform hover:scale-105"
+          >
+            <FaUserPlus className="mr-2" />
+            Sign Up
+          </button>
+          <button
+            onClick={() => router.push("/login")}
+            className="px-8 py-4 border border-purple-400 text-purple-900 dark:text-purple-300 rounded-lg font-semibold text-lg transition transform hover:scale-105"
+          >
+            Already a Member
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
