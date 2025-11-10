@@ -37,7 +37,7 @@ export default function Hero() {
 
           <button
             onClick={() => router.push("/login")}
-            className="w-full sm:w-auto px-8 py-3 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg font-semibold text-lg transition-colors duration-200 hover:bg-brand hover:text-white"
+            className="w-full sm:w-auto px-8 py-3 bg-gray-100 dark:bg-gray-600  text-gray-800 dark:text-gray-100 rounded-lg font-semibold text-lg transition-colors duration-200 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-200 dark:hover:text-gray-900"
           >
             Already a Member
           </button>
