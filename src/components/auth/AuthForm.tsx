@@ -115,7 +115,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         {mode === "login" && (
           <p
             className="text-right text-sm text-text-light dark:text-text-dark cursor-pointer hover:underline"
-            onClick={() => alert("Forgot password flow")}
+            onClick={() => (window.location.href = "/forgot-password")}
           >
             Forgot Password?
           </p>
