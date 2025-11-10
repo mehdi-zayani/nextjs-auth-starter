@@ -8,24 +8,39 @@ export default function ContactPage() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setPreviewUrl(null);
+    setLoading(true);
 
-    // Placeholder for API call
     try {
-      // const res = await fetch("/api/contact", { method: "POST", body: JSON.stringify({ name, email, message }) });
-      // const data = await res.json();
-      // if (data.success) setSuccess("Message sent successfully!");
-      setSuccess("Message sent successfully! (Mock)");
-      setName("");
-      setEmail("");
-      setMessage("");
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setSuccess("Message sent successfully! (dev)");
+        if (data.previewUrl) setPreviewUrl(data.previewUrl);
+        setName("");
+        setEmail("");
+        setMessage("");
+      } else {
+        setError(data.message || "Something went wrong.");
+      }
     } catch (err: any) {
-      setError("Something went wrong, please try again.");
+      setError(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,12 +87,29 @@ export default function ContactPage() {
 
           <button
             type="submit"
-            className="flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white py-3 px-6 rounded-lg font-semibold text-lg transition-all duration-200 shadow-md hover:shadow-lg w-full"
+            disabled={loading}
+            className="flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white py-3 px-6 rounded-lg font-semibold text-lg transition-all duration-200 shadow-md hover:shadow-lg w-full disabled:opacity-60"
           >
             <FiSend />
-            Send Message
+            {loading ? "Sending..." : "Send Message"}
           </button>
         </form>
+
+        {previewUrl && (
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Preview (dev):{" "}
+              <a
+                href={previewUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="underline text-brand"
+              >
+                Open email preview
+              </a>
+            </p>
+          </div>
+        )}
 
         <div className="text-center text-gray-700 dark:text-gray-300 mt-6 flex flex-col items-center gap-2">
           <p className="flex items-center gap-2">
