@@ -10,14 +10,22 @@ import MobileMenu from "./MobileMenu";
 export default function Navbar() {
   const router = useRouter();
   const { data: session } = useSession();
+
+  // State for dark mode toggle
   const [isDark, setIsDark] = useState(false);
+
+  // State for mobile menu
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Sync initial dark mode state on mount (avoiding direct setState in effect)
   useEffect(() => {
     const html = document.documentElement;
-    setIsDark(html.classList.contains("dark"));
+    setTimeout(() => {
+      setIsDark(html.classList.contains("dark"));
+    }, 0);
   }, []);
 
+  // Toggle dark mode on click
   const toggleDarkMode = () => {
     const html = document.documentElement;
     html.classList.toggle("dark");
@@ -27,7 +35,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="fixed top-0 w-full bg-gray-50 dark:bg-gray-900 shadow-sm dark:shadow-md px-6 py-4 flex items-center justify-between transition-colors duration-300 z-50">
-        {/* Logo */}
+        {/* Logo: clickable to go home */}
         <div
           className="text-xl font-bold text-gray-900 dark:text-white cursor-pointer"
           onClick={() => router.push("/")}
@@ -35,7 +43,7 @@ export default function Navbar() {
           Next Auth
         </div>
 
-        {/* Desktop Links */}
+        {/* Desktop Navigation Links */}
         <div className="hidden md:flex gap-6 font-medium">
           <Link
             href="/"
@@ -57,9 +65,9 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Actions */}
+        {/* Action Buttons */}
         <div className="flex items-center gap-4">
-          {/* User Info / Icon */}
+          {/* User info if logged in */}
           {session ? (
             <div
               className="hidden md:flex items-center gap-2 cursor-pointer"
@@ -80,14 +88,16 @@ export default function Navbar() {
               <FiUser />
             </button>
           )}
-          {/* Dark Mode Toggle */}
+
+          {/* Dark mode toggle */}
           <button
             onClick={toggleDarkMode}
             className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
           >
             {isDark ? <FiSun /> : <FiMoon />}
           </button>
-          {/* Mobile Menu Button */}
+
+          {/* Mobile menu toggle */}
           <button
             className="md:hidden p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
             onClick={() => setMenuOpen((prev) => !prev)}
@@ -97,7 +107,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Component */}
       <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );

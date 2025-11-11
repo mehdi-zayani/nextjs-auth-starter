@@ -3,16 +3,18 @@
 import { useState } from "react";
 import { FiMail, FiSend } from "react-icons/fi";
 
+// Contact page component
 export default function ContactPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState("");
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Form submit handler
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -26,7 +28,8 @@ export default function ContactPage() {
         body: JSON.stringify({ name, email, message }),
       });
 
-      const data = await res.json();
+      const data: { success: boolean; message?: string; previewUrl?: string } =
+        await res.json();
 
       if (res.ok && data.success) {
         setSuccess("Message sent successfully! (dev)");
@@ -35,10 +38,12 @@ export default function ContactPage() {
         setEmail("");
         setMessage("");
       } else {
-        setError(data.message || "Something went wrong.");
+        setError(data.message ?? "Something went wrong.");
       }
-    } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong.";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -47,16 +52,21 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="w-full max-w-2xl space-y-6">
+        {/* Page Title */}
         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white text-center">
           Contact Us
         </h1>
+
         <p className="text-lg text-gray-700 dark:text-gray-300 text-center">
-          Have questions or feedback? Send us a message and we'll get back to you shortly.
+          Have questions or feedback? Send us a message and we&apos;ll get back
+          to you shortly.
         </p>
 
+        {/* Success and error messages */}
         {success && <p className="text-green-500 text-center">{success}</p>}
         {error && <p className="text-red-500 text-center">{error}</p>}
 
+        {/* Contact form */}
         <form
           onSubmit={handleSubmit}
           className="bg-background-card-light dark:bg-background-card-dark p-6 rounded-2xl shadow-soft space-y-4 transition-colors duration-300"
@@ -95,6 +105,7 @@ export default function ContactPage() {
           </button>
         </form>
 
+        {/* Preview link in dev */}
         {previewUrl && (
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -111,9 +122,10 @@ export default function ContactPage() {
           </div>
         )}
 
+        {/* Contact email */}
         <div className="text-center text-gray-700 dark:text-gray-300 mt-6 flex flex-col items-center gap-2">
           <p className="flex items-center gap-2">
-            <FiMail /> contact@mehdizayani.com
+            <FiMail /> contact@yourdomain.com
           </p>
         </div>
       </div>
