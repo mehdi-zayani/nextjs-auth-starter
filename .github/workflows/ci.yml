@@ -15,10 +15,10 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     env:
-      MONGODB_URI: ${{ secrets.MONGODB_URI }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI || '' }}
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || '' }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID || '' }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET || '' }}
 
     steps:
       # 1️ Checkout the repository code
@@ -63,11 +63,11 @@ jobs:
     needs: build-and-test
     if: github.event_name == 'workflow_dispatch'
     env:
-      MONGODB_URI: ${{ secrets.MONGODB_URI }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI || '' }}
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || '' }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID || '' }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET || '' }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN || '' }}
 
     steps:
       - name: Checkout repository
