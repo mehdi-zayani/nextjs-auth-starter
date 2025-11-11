@@ -47,7 +47,7 @@ export default function AboutPage() {
             <Link
               href="https://github.com/mehdi-zayani/nextjs-auth-starter"
               target="_blank"
-              className="flex   items-center gap-2 px-5 py-3 border-2 border-gray-800 text-gray-800 dark:border-gray-300 dark:text-gray-300 rounded-lg font-medium transition-all duration-200 hover:bg-gray-800 hover:text-white   dark:hover:bg-gray-300 dark:hover:text-gray-900"
+              className="flex items-center gap-2 px-5 py-3 border-2 border-gray-800 text-gray-800 dark:border-gray-300 dark:text-gray-300 rounded-lg font-medium transition-all duration-200 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-300 dark:hover:text-gray-900"
             >
               <FiGithub size={20} />
               View Repository
