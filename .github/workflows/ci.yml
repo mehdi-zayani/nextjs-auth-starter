@@ -14,6 +14,7 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
+
     env:
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
@@ -21,75 +22,38 @@ jobs:
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
     steps:
-      # 1️ Checkout the repository code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️ Use Node.js version defined in package.json
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "npm"
 
-      # 3️ Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 4️ Run linting
+      #  Safe creation of .env.local
+      - name: Create .env.local safely
+        run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env.local && echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.local && echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env.local && echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env.local && echo ".env.local created successfully."
+
+      - name: Verify env file (masked)
+        run: cat .env.local | sed 's/=.*/=***MASKED***/g'
+
       - name: Run ESLint
         run: npm run lint
 
-      # 4.5 Create .env.local from secrets
-      - name: Create .env.local
-        run: >
-          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.local
-          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.local
-          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env.local
-          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env.local
-
-      # 5️ Run build to ensure Next.js compiles successfully
       - name: Build project
         run: npm run build
 
-      # 6️ Run tests if present (optional)
       - name: Run tests
         run: npm test
         continue-on-error: true
 
-      # 7 Upload build output for debugging or deployment preview
       - name: Upload build artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: next-build
           path: .next
-
-  deploy-preview:
-    name: Deploy Preview (Manual)
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    if: github.event_name == 'workflow_dispatch'
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      MONGODB_URI: ${{ secrets.MONGODB_URI }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      # Deploy to Vercel using the official CLI (manual trigger)
-      - name: Deploy to Vercel (Preview)
-        run: >
-          npx vercel --token=${{ secrets.VERCEL_TOKEN }} --prod=false
