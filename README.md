@@ -7,6 +7,22 @@
 
 A professional and minimal **Next.js starter** with **TailwindCSS**, **dark mode**, and built-in **authentication**. Ideal for quickly starting projects, prototyping features, or testing secure auth flows without building everything from scratch.
 
+## Live Demo
+
+Check out the live demo here: [Next.js Auth Starter Demo](https://nextjs-auth-starter-red.vercel.app/)
+
+---
+
+## 📸 Screenshots
+
+### Home / Landing Page
+
+![Home Page](./screenshots/light-h.png)
+
+### Auth Form / Register
+
+![Signup Page](./screenshots/mob-l.png)
+
 ## About This Project
 
 **NextJS Auth Starter** is a lightweight, modern, and fully responsive authentication boilerplate for **Next.js**, **TypeScript**, and **MongoDB**.
