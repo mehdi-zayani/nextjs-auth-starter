@@ -16,14 +16,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (typeof window !== 'undefined') {
+              if (typeof window  !== 'undefined') {
                 document.documentElement.classList.remove('dark');
               }
             `,
           }}
         />
       </head>
-      <body className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-300">
+      <body className="min-h-screen   bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-300">
         <SessionProviderWrapper>
           <Navbar />
 
