@@ -2,21 +2,17 @@ name: CI - Next.js Auth Starter
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
 
 jobs:
   build:
-    name: Build Next.js Project
+    name: Build Next.js Starter
     runs-on: ubuntu-latest
 
     steps:
-      # 1️ Checkout repository
+      # 1️ Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -30,6 +26,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 4️ Build Next.js
+      # 4️ Build the project
       - name: Build project
         run: npm run build
