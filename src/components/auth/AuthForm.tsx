@@ -5,10 +5,12 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { FaGithub, FaGoogle, FaSignInAlt, FaUserPlus } from "react-icons/fa";
 
+// Props for AuthForm component: determines login or register mode
 interface AuthFormProps {
   mode: "login" | "register";
 }
 
+// Component for authentication form (login/register)
 export default function AuthForm({ mode }: AuthFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,13 +19,23 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Form submission handler
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
     if (mode === "login") {
-      const result = await signIn("credentials", { redirect: false, email, password });
+      // Sign in using NextAuth credentials provider
+      const resultRaw = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      // Convert to typed object safely
+      const result = resultRaw as unknown as { error?: string } | undefined;
+
       if (result?.error) setError(result.error);
       else window.location.href = "/dashboard";
     } else {
@@ -31,25 +43,31 @@ export default function AuthForm({ mode }: AuthFormProps) {
         setError("You must accept the terms to register.");
         return;
       }
+
       try {
-        const res = await fetch("/api/auth/register", {
+        const res: Response = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
         });
-        const data = await res.json();
+
+        const data: { success?: boolean; message?: string } = await res.json();
+
         if (data.success) {
           setSuccess("Registration successful. Redirecting to dashboard...");
           setTimeout(() => {
             window.location.href = "/dashboard";
           }, 1000);
         } else setError(data.message || "Something went wrong");
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Error occurred";
+        setError(errorMessage);
       }
     }
   };
 
+  // OAuth handler
   const handleOAuth = async (provider: "google" | "github") => {
     await signIn(provider, { callbackUrl: "/dashboard" });
   };
@@ -122,14 +140,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
         )}
       </form>
 
-      {/* Separator */}
       <div className="flex items-center justify-center gap-2 mt-2 mb-2">
         <hr className="flex-1 border-border-light dark:border-border-dark" />
         <span className="text-sm text-text-light dark:text-text-dark">or</span>
         <hr className="flex-1 border-border-light dark:border-border-dark" />
       </div>
 
-      {/* OAuth buttons */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <button
           onClick={() => handleOAuth("google")}
@@ -139,10 +155,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         </button>
         <button
           onClick={() => handleOAuth("github")}
-          className="w-full sm:w-auto flex items-center justify-center gap-2
-             bg-gray-800 dark:bg-white dark:text-gray-900
-             hover:bg-gray-900 dark:hover:bg-background-card-dark
-             text-white py-2 px-4 rounded-lg transition transform hover:scale-105"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gray-800 dark:bg-white dark:text-gray-900 hover:bg-gray-900 dark:hover:bg-background-card-dark text-white py-2 px-4 rounded-lg transition transform hover:scale-105"
         >
           <FaGithub /> GitHub
         </button>
