@@ -1,20 +1,23 @@
 // src/lib/mongodb.ts
 import { MongoClient, MongoClientOptions } from "mongodb";
 
-// MongoDB connection URI from environment variables
-const uri: string = process.env.MONGODB_URI!;
+// Use environment variable or fallback to a local MongoDB URI for dev/testing
+const uri: string =
+  process.env.MONGODB_URI || "mongodb://localhost:27017/devdb";
 const options: MongoClientOptions = {}; // Options object can be extended if needed
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
-// Ensure the Mongo URI exists
+// Warn if no real Mongo URI is provided
 if (!process.env.MONGODB_URI) {
-  throw new Error("Please add your Mongo URI to .env.local");
+  console.warn(
+    "⚠ MONGODB_URI is not set. Using fallback local MongoDB for development/testing.",
+  );
 }
 
 if (process.env.NODE_ENV === "development") {
-  // In development, prevent multiple connections using a global variable
+  // Prevent multiple connections in development
   if (
     !(global as unknown as { _mongoClientPromise?: Promise<MongoClient> })
       ._mongoClientPromise
