@@ -5,51 +5,68 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { FaGithub, FaGoogle, FaSignInAlt, FaUserPlus } from "react-icons/fa";
 
+// Props for AuthForm component: determines login or register mode
 interface AuthFormProps {
   mode: "login" | "register";
 }
 
+// Component for authentication form (login/register)
 export default function AuthForm({ mode }: AuthFormProps) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [name, setName] = useState(""); // User's name (register only)
+  const [email, setEmail] = useState(""); // User's email
+  const [password, setPassword] = useState(""); // User's password
+  const [acceptTerms, setAcceptTerms] = useState(false); // Terms acceptance (register)
+  const [error, setError] = useState(""); // Error message
+  const [success, setSuccess] = useState(""); // Success message
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Form submission handler
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
     if (mode === "login") {
-      const result = await signIn("credentials", { redirect: false, email, password });
+      // Sign in using NextAuth credentials provider
+      const result = await signIn<{
+        error?: string;
+        status?: number;
+        ok?: boolean;
+        url?: string;
+      }>("credentials", { redirect: false, email, password });
+
       if (result?.error) setError(result.error);
-      else window.location.href = "/dashboard";
+      else window.location.href = "/dashboard"; // Redirect on success
     } else {
+      // Registration flow
       if (!acceptTerms) {
         setError("You must accept the terms to register.");
         return;
       }
+
       try {
-        const res = await fetch("/api/auth/register", {
+        const res: Response = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
         });
-        const data = await res.json();
+
+        const data: { success?: boolean; message?: string } = await res.json();
+
         if (data.success) {
           setSuccess("Registration successful. Redirecting to dashboard...");
           setTimeout(() => {
             window.location.href = "/dashboard";
           }, 1000);
         } else setError(data.message || "Something went wrong");
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Error occurred";
+        setError(errorMessage);
       }
     }
   };
 
+  // OAuth handler for Google/GitHub
   const handleOAuth = async (provider: "google" | "github") => {
     await signIn(provider, { callbackUrl: "/dashboard" });
   };
