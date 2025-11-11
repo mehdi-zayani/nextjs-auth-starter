@@ -12,12 +12,12 @@ interface AuthFormProps {
 
 // Component for authentication form (login/register)
 export default function AuthForm({ mode }: AuthFormProps) {
-  const [name, setName] = useState(""); // User's name (register only)
-  const [email, setEmail] = useState(""); // User's email
-  const [password, setPassword] = useState(""); // User's password
-  const [acceptTerms, setAcceptTerms] = useState(false); // Terms acceptance (register)
-  const [error, setError] = useState(""); // Error message
-  const [success, setSuccess] = useState(""); // Success message
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   // Form submission handler
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -27,17 +27,18 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
     if (mode === "login") {
       // Sign in using NextAuth credentials provider
-      const result = await signIn<{
-        error?: string;
-        status?: number;
-        ok?: boolean;
-        url?: string;
-      }>("credentials", { redirect: false, email, password });
+      const resultRaw = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      // Convert to typed object safely
+      const result = resultRaw as unknown as { error?: string } | undefined;
 
       if (result?.error) setError(result.error);
-      else window.location.href = "/dashboard"; // Redirect on success
+      else window.location.href = "/dashboard";
     } else {
-      // Registration flow
       if (!acceptTerms) {
         setError("You must accept the terms to register.");
         return;
@@ -66,7 +67,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   };
 
-  // OAuth handler for Google/GitHub
+  // OAuth handler
   const handleOAuth = async (provider: "google" | "github") => {
     await signIn(provider, { callbackUrl: "/dashboard" });
   };
@@ -139,14 +140,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
         )}
       </form>
 
-      {/* Separator */}
       <div className="flex items-center justify-center gap-2 mt-2 mb-2">
         <hr className="flex-1 border-border-light dark:border-border-dark" />
         <span className="text-sm text-text-light dark:text-text-dark">or</span>
         <hr className="flex-1 border-border-light dark:border-border-dark" />
       </div>
 
-      {/* OAuth buttons */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <button
           onClick={() => handleOAuth("google")}
@@ -156,10 +155,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         </button>
         <button
           onClick={() => handleOAuth("github")}
-          className="w-full sm:w-auto flex items-center justify-center gap-2
-             bg-gray-800 dark:bg-white dark:text-gray-900
-             hover:bg-gray-900 dark:hover:bg-background-card-dark
-             text-white py-2 px-4 rounded-lg transition transform hover:scale-105"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gray-800 dark:bg-white dark:text-gray-900 hover:bg-gray-900 dark:hover:bg-background-card-dark text-white py-2 px-4 rounded-lg transition transform hover:scale-105"
         >
           <FaGithub /> GitHub
         </button>
