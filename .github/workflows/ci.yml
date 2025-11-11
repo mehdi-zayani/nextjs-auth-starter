@@ -40,16 +40,24 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-      # 5️ Run build to ensure Next.js compiles successfully
+      # 5️ Create temporary .env.local for Next.js build
+      - name: Create temporary .env.local
+        run: |
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.local
+          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.local
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env.local
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env.local
+
+      # 6️ Run build to ensure Next.js compiles successfully
       - name: Build project
         run: npm run build
 
-      # 6️ Run tests if present (optional but professional)
+      # 7️ Run tests if present (optional)
       - name: Run tests
         run: npm test
         continue-on-error: true
 
-      # 7 Upload build output for debugging or deployment preview
+      # 8️ Upload build output for debugging or deployment preview
       - name: Upload build artifacts
         if: success()
         uses: actions/upload-artifact@v4
