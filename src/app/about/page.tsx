@@ -26,26 +26,28 @@ export default function AboutPage() {
           </h1>
 
           <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-            <strong>Next Auth Starter</strong> is a lightweight and modern authentication
-            boilerplate built with Next.js, TypeScript, and MongoDB. It provides a clean starting
-            point for developers who want to integrate secure login, registration, OAuth, and
-            password recovery effortlessly.
+            <strong>Next Auth Starter</strong> is a lightweight and modern
+            authentication boilerplate built with Next.js, TypeScript, and
+            MongoDB. It provides a clean starting point for developers who want
+            to integrate secure login, registration, OAuth, and password
+            recovery effortlessly.
           </p>
 
           <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-            This starter focuses on simplicity, scalability, and developer experience — helping you
-            quickly set up a secure and modern authentication system for your Next.js applications.
-            It’s also perfect when you want to prototype or test new features without building a
-            full auth system from scratch.
+            This starter focuses on simplicity, scalability, and developer
+            experience — helping you quickly set up a secure and modern
+            authentication system for your Next.js applications. It’s also
+            perfect when you want to prototype or test new features without
+            building a full auth system from scratch.
           </p>
 
           {/* Buttons */}
-          <div className="flex flex-col items-center gap-6 mt-6">
+          <div className="flex flex-col items-center  gap-6 mt-6">
             {/* View Repository as outline text, centered */}
             <Link
               href="https://github.com/mehdi-zayani/nextjs-auth-starter"
               target="_blank"
-              className="flex items-center gap-2 px-5 py-3 border-2 border-gray-800 text-gray-800 dark:border-gray-300 dark:text-gray-300 rounded-lg font-medium transition-all duration-200 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-300 dark:hover:text-gray-900"
+              className="flex items-center gap-2 px-5   py-3 border-2 border-gray-800 text-gray-800 dark:border-gray-300 dark:text-gray-300   rounded-lg font-medium transition-all duration-200 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-300 dark:hover:text-gray-900"
             >
               <FiGithub size={20} />
               View Repository

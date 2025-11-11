@@ -2,24 +2,31 @@
 
 import { useState } from "react";
 
+// Component for Forgot Password Page
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [email, setEmail] = useState(""); // User email input
+  const [message, setMessage] = useState(""); // Feedback message to display
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Handler for form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage("");
 
     try {
-      const res = await fetch("/api/auth/forgot-password", {
+      const res: Response = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      const data = await res.json();
+
+      // Explicitly type the expected response structure
+      const data: { message?: string } = await res.json();
       setMessage(data.message || "Check console for reset link (dev mode).");
-    } catch (err: any) {
-      setMessage(err.message || "Error occurred");
+    } catch (err: unknown) {
+      // Ensure proper typing for error
+      const errorMessage =
+        err instanceof Error ? err.message : "Error occurred";
+      setMessage(errorMessage);
     }
   };
 
@@ -30,6 +37,7 @@ export default function ForgotPasswordPage() {
           Forgot Password
         </h1>
         {message && <p className="text-center mb-4">{message}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"

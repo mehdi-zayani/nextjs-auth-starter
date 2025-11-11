@@ -4,31 +4,42 @@ import Card from "@/components/ui/Card";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
+// Component for resetting user password
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const { token } = useParams() as { token: string };
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [message, setMessage] = useState("");
+  const { token } = useParams() as { token: string }; // Retrieve token from URL params
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [password, setPassword] = useState(""); // New password input
+  const [confirm, setConfirm] = useState(""); // Confirm password input
+  const [message, setMessage] = useState(""); // Feedback message
+
+  // Form submission handler
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Check if passwords match
     if (password !== confirm) {
       setMessage("Passwords do not match");
       return;
     }
 
     try {
-      const res = await fetch("/api/auth/reset-password", {
+      const res: Response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
       });
-      const data = await res.json();
-      setMessage(data.message);
+
+      // Define expected response structure
+      const data: { message?: string } = await res.json();
+      setMessage(data.message || "Password reset successfully.");
+
+      // Redirect to login after success
       if (res.ok) setTimeout(() => router.push("/login"), 1000);
-    } catch (err: any) {
-      setMessage(err.message || "Error occurred");
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error occurred";
+      setMessage(errorMessage);
     }
   };
 
