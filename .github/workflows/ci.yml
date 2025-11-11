@@ -25,7 +25,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️ Use Node.js version defined in package.json (via .nvmrc or manually)
+      # 2️ Use Node.js version defined in package.json
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -40,24 +40,24 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-      # 5️ Create temporary .env.local for Next.js build
-      - name: Create temporary .env.local
-        run: |
+      # 4.5 Create .env.local from secrets
+      - name: Create .env.local
+        run: >
           echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.local
           echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.local
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env.local
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env.local
 
-      # 6️ Run build to ensure Next.js compiles successfully
+      # 5️ Run build to ensure Next.js compiles successfully
       - name: Build project
         run: npm run build
 
-      # 7️ Run tests if present (optional)
+      # 6️ Run tests if present (optional)
       - name: Run tests
         run: npm test
         continue-on-error: true
 
-      # 8️ Upload build output for debugging or deployment preview
+      # 7 Upload build output for debugging or deployment preview
       - name: Upload build artifacts
         if: success()
         uses: actions/upload-artifact@v4
@@ -91,4 +91,5 @@ jobs:
 
       # Deploy to Vercel using the official CLI (manual trigger)
       - name: Deploy to Vercel (Preview)
-        run: npx vercel --token=${{ secrets.VERCEL_TOKEN }} --prod=false
+        run: >
+          npx vercel --token=${{ secrets.VERCEL_TOKEN }} --prod=false
